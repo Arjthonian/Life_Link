@@ -69,3 +69,18 @@ export async function getUserProfile(userId: string) {
   if (error) throw error;
   return data;
 }
+
+export async function deleteUserAccount() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('No user logged in');
+
+  const { error: deleteError } = await supabase
+    .from('users')
+    .delete()
+    .eq('id', user.id);
+
+  if (deleteError) throw deleteError;
+
+  const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
+  if (authError) throw authError;
+}

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import type { Donor } from '../lib/supabase';
-import { Heart, MapPin, Phone, Droplet, Calendar, Edit2, Check, X } from 'lucide-react';
+import { Heart, MapPin, Phone, Droplet, Calendar, Edit2, Check, X, Trash2 } from 'lucide-react';
+import { deleteUserAccount } from '../lib/auth';
 
 export default function Dashboard() {
   const { profile, refreshProfile } = useAuth();
@@ -18,6 +19,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState('');
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchDonorData();
@@ -111,6 +115,22 @@ export default function Dashboard() {
       setTimeout(() => setMessage(''), 3000);
     } catch (err: any) {
       setMessage(err.message || 'Failed to update availability');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    setMessage('');
+
+    try {
+      await deleteUserAccount();
+      setMessage('Account deleted successfully');
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 2000);
+    } catch (err: any) {
+      setMessage(err.message || 'Failed to delete account');
+      setDeleting(false);
     }
   };
 
@@ -266,32 +286,84 @@ export default function Dashboard() {
           </div>
 
           {!editing && (
-            <div className="border-t pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Donation Availability</h3>
-                  <p className="text-gray-600 text-sm">
-                    Let others know if you're currently available to donate blood
-                  </p>
+            <>
+              <div className="border-t pt-6 mb-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Donation Availability</h3>
+                    <p className="text-gray-600 text-sm">
+                      Let others know if you're currently available to donate blood
+                    </p>
+                  </div>
+                  <button
+                    onClick={toggleAvailability}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+                      donor?.availability
+                        ? 'bg-green-600 text-white hover:bg-green-700'
+                        : 'bg-gray-500 text-white hover:bg-gray-600'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Heart className="w-5 h-5" />
+                      {donor?.availability ? 'Available' : 'Unavailable'}
+                    </span>
+                  </button>
                 </div>
+              </div>
+
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Danger Zone</h3>
                 <button
-                  onClick={toggleAvailability}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
-                    donor?.availability
-                      ? 'bg-green-600 text-white hover:bg-green-700'
-                      : 'bg-gray-500 text-white hover:bg-gray-600'
-                  }`}
+                  onClick={() => setShowDeleteModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 border border-red-300 rounded-lg hover:bg-red-200 transition-colors font-medium"
                 >
-                  <span className="flex items-center gap-2">
-                    <Heart className="w-5 h-5" />
-                    {donor?.availability ? 'Available' : 'Unavailable'}
-                  </span>
+                  <Trash2 className="w-4 h-4" />
+                  Delete Account and All Data
                 </button>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Delete Account?</h2>
+            <p className="text-gray-600 mb-4">
+              This action cannot be undone. All your profile data, donor information, and account will be permanently deleted.
+            </p>
+            <p className="text-gray-700 font-medium mb-4">
+              Type <span className="font-bold text-red-600">DELETE</span> to confirm:
+            </p>
+            <input
+              type="text"
+              value={deleteConfirm}
+              onChange={(e) => setDeleteConfirm(e.target.value)}
+              placeholder="Enter DELETE"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent mb-4"
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteConfirm('');
+                }}
+                className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteConfirm !== 'DELETE' || deleting}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

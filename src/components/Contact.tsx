@@ -25,8 +25,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-500 text-sm">Mon-Fri 9am-6pm</p>
+                    <p className="text-gray-600">01533061141</p>
+                    <p className="text-gray-500 text-sm">Available 24/7</p>
                   </div>
                 </div>
 
@@ -64,7 +64,7 @@ export default function Contact() {
                   If you need blood urgently, please call our 24/7 emergency hotline
                 </p>
                 <a
-                  href="tel:+15551234567"
+                  href="tel:01533061141"
                   className="inline-block px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors"
                 >
                   Call Emergency Line
