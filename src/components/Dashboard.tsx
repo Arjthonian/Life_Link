@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import type { Donor } from '../lib/supabase';
-import { Heart, MapPin, Phone, Droplet, Calendar, Edit2, Check, X, Trash2 } from 'lucide-react';
-import { deleteUserAccount } from '../lib/auth';
+import { Heart, MapPin, Phone, Droplet, Calendar, Edit2, Check, X, Trash2, Plus } from 'lucide-react';
+import { deleteUserAccount, createUserProfile } from '../lib/auth';
 
 export default function Dashboard() {
   const { profile, refreshProfile } = useAuth();
@@ -22,6 +22,13 @@ export default function Dashboard() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deleting, setDeleting] = useState(false);
+  const [creatingProfile, setCreatingProfile] = useState(false);
+  const [profileFormData, setProfileFormData] = useState({
+    name: '',
+    phone: '',
+    blood_group: '',
+    location: '',
+  });
 
   useEffect(() => {
     fetchDonorData();
@@ -134,6 +141,24 @@ export default function Dashboard() {
     }
   };
 
+  const handleCreateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreatingProfile(true);
+    setMessage('');
+
+    try {
+      await createUserProfile(profileFormData);
+      await refreshProfile();
+      await fetchDonorData();
+      setMessage('Profile created successfully!');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err: any) {
+      setMessage(err.message || 'Failed to create profile');
+    } finally {
+      setCreatingProfile(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -143,6 +168,108 @@ export default function Dashboard() {
   }
 
   if (!profile) return null;
+
+  if (!profile || !donor) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="bg-red-600 text-white px-6 py-8">
+            <h1 className="text-3xl font-bold mb-2">Create Your Donor Profile</h1>
+            <p className="text-red-100">Fill in your blood donation information to get started</p>
+          </div>
+
+          <div className="p-6">
+            {message && (
+              <div className={`mb-6 px-4 py-3 rounded-lg ${
+                message.includes('success')
+                  ? 'bg-green-50 border border-green-200 text-green-700'
+                  : 'bg-red-50 border border-red-200 text-red-700'
+              }`}>
+                {message}
+              </div>
+            )}
+
+            <form onSubmit={handleCreateProfile} className="max-w-md">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={profileFormData.name}
+                    onChange={(e) => setProfileFormData({ ...profileFormData, name: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    placeholder="John Doe"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={profileFormData.phone}
+                    onChange={(e) => setProfileFormData({ ...profileFormData, phone: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    placeholder="+1 234 567 8900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Blood Group
+                  </label>
+                  <select
+                    value={profileFormData.blood_group}
+                    onChange={(e) => setProfileFormData({ ...profileFormData, blood_group: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  >
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    value={profileFormData.location}
+                    onChange={(e) => setProfileFormData({ ...profileFormData, location: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    placeholder="City, State"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={creatingProfile}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold mt-6"
+                >
+                  <Plus className="w-5 h-5" />
+                  {creatingProfile ? 'Creating Profile...' : 'Create Profile'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">

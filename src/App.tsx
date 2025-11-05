@@ -7,6 +7,7 @@ import SignUp from './components/SignUp';
 import Dashboard from './components/Dashboard';
 import FindBlood from './components/FindBlood';
 import Contact from './components/Contact';
+import ForgotPassword from './components/ForgotPassword';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -20,6 +21,7 @@ function App() {
           <Login
             onSuccess={() => setCurrentPage('dashboard')}
             onSwitchToSignUp={() => setCurrentPage('signup')}
+            onSwitchToForgotPassword={() => setCurrentPage('forgot-password')}
           />
         );
       case 'signup':
@@ -29,6 +31,8 @@ function App() {
             onSwitchToLogin={() => setCurrentPage('login')}
           />
         );
+      case 'forgot-password':
+        return <ForgotPassword onBack={() => setCurrentPage('login')} />;
       case 'dashboard':
         return <Dashboard />;
       case 'find':

@@ -5,9 +5,10 @@ import { LogIn } from 'lucide-react';
 interface LoginProps {
   onSuccess: () => void;
   onSwitchToSignUp: () => void;
+  onSwitchToForgotPassword: () => void;
 }
 
-export default function Login({ onSuccess, onSwitchToSignUp }: LoginProps) {
+export default function Login({ onSuccess, onSwitchToSignUp, onSwitchToForgotPassword }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -83,7 +84,7 @@ export default function Login({ onSuccess, onSwitchToSignUp }: LoginProps) {
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 space-y-3 text-center">
           <p className="text-gray-600">
             Don't have an account?{' '}
             <button
@@ -91,6 +92,14 @@ export default function Login({ onSuccess, onSwitchToSignUp }: LoginProps) {
               className="text-red-600 font-semibold hover:text-red-700"
             >
               Sign Up
+            </button>
+          </p>
+          <p className="text-gray-600">
+            <button
+              onClick={onSwitchToForgotPassword}
+              className="text-red-600 font-semibold hover:text-red-700"
+            >
+              Forgot Password?
             </button>
           </p>
         </div>

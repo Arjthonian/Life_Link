@@ -84,3 +84,47 @@ export async function deleteUserAccount() {
   const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
   if (authError) throw authError;
 }
+
+export async function createUserProfile(userData: {
+  name: string;
+  phone: string;
+  blood_group: string;
+  location: string;
+}) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('No user logged in');
+
+  const { error: userError } = await supabase.from('users').insert({
+    id: user.id,
+    name: userData.name,
+    email: user.email || '',
+    phone: userData.phone,
+    blood_group: userData.blood_group,
+    location: userData.location,
+  });
+
+  if (userError) throw userError;
+
+  const { error: donorError } = await supabase.from('donors').insert({
+    user_id: user.id,
+    availability: true,
+  });
+
+  if (donorError) throw donorError;
+}
+
+export async function resetPassword(email: string) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}`,
+  });
+
+  if (error) throw error;
+}
+
+export async function updatePassword(newPassword: string) {
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+
+  if (error) throw error;
+}
