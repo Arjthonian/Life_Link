@@ -81,7 +81,7 @@ export async function deleteUserAccount() {
 
   if (deleteError) throw deleteError;
 
-  const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
+  const { error: authError } = await supabase.auth.signOut();
   if (authError) throw authError;
 }
 

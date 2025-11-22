@@ -46,10 +46,10 @@ export default function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8 animate-fade-in">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 animate-slide-up">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4 animate-scale-in">
             <UserPlus className="w-8 h-8 text-red-600" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900">Join Life Link</h2>
@@ -57,7 +57,7 @@ export default function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 animate-slide-up">
             {error}
           </div>
         )}
@@ -162,7 +162,7 @@ export default function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 hover:scale-105 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
           >
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>

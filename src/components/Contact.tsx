@@ -48,7 +48,7 @@ export default function Contact() {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Address</h3>
                     <p className="text-gray-600">123 Healthcare Avenue</p>
-                    <p className="text-gray-600">Medical District, MD 12345</p>
+                    <p className="text-gray-600">Chittagong</p>
                   </div>
                 </div>
               </div>

@@ -68,14 +68,17 @@ export default function FindBlood() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="text-center">Loading donors...</div>
+        <div className="text-center animate-pulse">
+          <div className="inline-block w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading donors...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 animate-fade-in">
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-8 animate-slide-up">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Find Blood Donors</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -113,7 +116,7 @@ export default function FindBlood() {
           <div className="flex items-end">
             <button
               onClick={filterDonors}
-              className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <Search className="w-5 h-5" />
               Search
@@ -127,16 +130,17 @@ export default function FindBlood() {
       </div>
 
       {!user && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg mb-6">
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg mb-6 animate-slide-up">
           <p className="font-medium">Please login to view donor contact information</p>
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredDonors.map((donor) => (
+        {filteredDonors.map((donor, index) => (
           <div
             key={donor.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 animate-slide-up"
+            style={{ animationDelay: `${index * 0.05}s` }}
           >
             <div className={`h-2 ${donor.availability ? 'bg-green-500' : 'bg-gray-400'}`}></div>
 
@@ -173,7 +177,7 @@ export default function FindBlood() {
                 </div>
 
                 {user && selectedDonor === donor.id && (
-                  <div className="flex items-center gap-2 text-gray-700 bg-gray-50 p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-gray-700 bg-gray-50 p-3 rounded-lg animate-slide-up">
                     <Phone className="w-5 h-5 text-gray-500" />
                     <span className="font-medium">{donor.users.phone}</span>
                   </div>
@@ -183,9 +187,9 @@ export default function FindBlood() {
               <button
                 onClick={() => handleContactClick(donor.id)}
                 disabled={!user}
-                className={`w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors ${
+                className={`w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
                   user
-                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    ? 'bg-red-600 text-white hover:bg-red-700 hover:scale-105 shadow-md hover:shadow-lg'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
               >
@@ -198,7 +202,7 @@ export default function FindBlood() {
       </div>
 
       {filteredDonors.length === 0 && (
-        <div className="text-center py-12">
+        <div className="text-center py-12 animate-fade-in">
           <Droplet className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-600 mb-2">No donors found</h3>
           <p className="text-gray-500">Try adjusting your search filters</p>

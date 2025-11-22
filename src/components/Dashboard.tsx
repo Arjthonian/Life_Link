@@ -162,7 +162,10 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="text-center">Loading...</div>
+        <div className="text-center animate-pulse">
+          <div className="inline-block w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -171,8 +174,8 @@ export default function Dashboard() {
 
   if (!profile || !donor) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden animate-slide-up">
           <div className="bg-red-600 text-white px-6 py-8">
             <h1 className="text-3xl font-bold mb-2">Create Your Donor Profile</h1>
             <p className="text-red-100">Fill in your blood donation information to get started</p>
@@ -180,7 +183,7 @@ export default function Dashboard() {
 
           <div className="p-6">
             {message && (
-              <div className={`mb-6 px-4 py-3 rounded-lg ${
+              <div className={`mb-6 px-4 py-3 rounded-lg animate-slide-up ${
                 message.includes('success')
                   ? 'bg-green-50 border border-green-200 text-green-700'
                   : 'bg-red-50 border border-red-200 text-red-700'
@@ -258,7 +261,7 @@ export default function Dashboard() {
                 <button
                   type="submit"
                   disabled={creatingProfile}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold mt-6"
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:scale-105 transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold mt-6 shadow-md hover:shadow-lg"
                 >
                   <Plus className="w-5 h-5" />
                   {creatingProfile ? 'Creating Profile...' : 'Create Profile'}
@@ -272,8 +275,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden animate-slide-up">
         <div className="bg-red-600 text-white px-6 py-8">
           <h1 className="text-3xl font-bold mb-2">My Dashboard</h1>
           <p className="text-red-100">Manage your donor profile</p>
@@ -281,7 +284,7 @@ export default function Dashboard() {
 
         <div className="p-6">
           {message && (
-            <div className={`mb-6 px-4 py-3 rounded-lg ${
+            <div className={`mb-6 px-4 py-3 rounded-lg animate-slide-up ${
               message.includes('success') || message.includes('available')
                 ? 'bg-green-50 border border-green-200 text-green-700'
                 : 'bg-red-50 border border-red-200 text-red-700'
@@ -295,7 +298,7 @@ export default function Dashboard() {
             {!editing ? (
               <button
                 onClick={() => setEditing(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit Profile
@@ -305,7 +308,7 @@ export default function Dashboard() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400"
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:scale-105 transition-all duration-200 disabled:bg-gray-400 shadow-md hover:shadow-lg"
                 >
                   <Check className="w-4 h-4" />
                   {saving ? 'Saving...' : 'Save'}
@@ -321,7 +324,7 @@ export default function Dashboard() {
                       last_donation_date: donor?.last_donation_date || '',
                     });
                   }}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
                 >
                   <X className="w-4 h-4" />
                   Cancel
