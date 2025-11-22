@@ -92,8 +92,7 @@ CREATE INDEX IF NOT EXISTS idx_donors_user_id ON donors(user_id);
 CREATE INDEX IF NOT EXISTS idx_donors_availability ON donors(availability);
 
 -- Enable Row Level Security
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE donors ENABLE ROW LEVEL SECURITY;
+
 
 -- Drop existing policies if they exist
 DROP POLICY IF EXISTS "Users can read own profile" ON users;
