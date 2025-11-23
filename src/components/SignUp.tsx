@@ -26,6 +26,18 @@ export default function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
     setLoading(true);
     setError('');
 
+    if (!formData.name || !formData.email || !formData.password || !formData.phone || !formData.blood_group || !formData.location) {
+      setError('All fields are required');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      setLoading(false);
+      return;
+    }
+
     try {
       await signUp(formData.email, formData.password, {
         name: formData.name,
@@ -35,7 +47,9 @@ export default function SignUp({ onSuccess, onSwitchToLogin }: SignUpProps) {
       });
       onSuccess();
     } catch (err: any) {
-      setError(err.message || 'Failed to sign up');
+      const errorMsg = err.message || 'Failed to sign up';
+      setError(errorMsg);
+      console.error('Sign up error:', err);
     } finally {
       setLoading(false);
     }

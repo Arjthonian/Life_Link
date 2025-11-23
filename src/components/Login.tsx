@@ -19,11 +19,19 @@ export default function Login({ onSuccess, onSwitchToSignUp, onSwitchToForgotPas
     setLoading(true);
     setError('');
 
+    if (!email || !password) {
+      setError('Email and password are required');
+      setLoading(false);
+      return;
+    }
+
     try {
       await signIn(email, password);
       onSuccess();
     } catch (err: any) {
-      setError(err.message || 'Failed to login');
+      const errorMsg = err.message || 'Failed to login';
+      setError(errorMsg);
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }

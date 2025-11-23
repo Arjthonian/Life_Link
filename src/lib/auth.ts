@@ -10,33 +10,46 @@ export async function signUp(
     location: string;
   }
 ) {
-  const { data: authData, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-  });
+  try {
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
-  if (authError) throw authError;
-  if (!authData.user) throw new Error('User creation failed');
+    if (authError) throw authError;
+    if (!authData.user) throw new Error('User creation failed');
 
-  const { error: userError } = await supabase.from('users').insert({
-    id: authData.user.id,
-    name: userData.name,
-    email: email,
-    phone: userData.phone,
-    blood_group: userData.blood_group,
-    location: userData.location,
-  });
+    // Give auth session a moment to be established
+    await new Promise(resolve => setTimeout(resolve, 100));
 
-  if (userError) throw userError;
+    const { error: userError } = await supabase.from('users').insert({
+      id: authData.user.id,
+      name: userData.name,
+      email: email,
+      phone: userData.phone,
+      blood_group: userData.blood_group,
+      location: userData.location,
+    });
 
-  const { error: donorError } = await supabase.from('donors').insert({
-    user_id: authData.user.id,
-    availability: true,
-  });
+    if (userError) {
+      console.error('User insert error:', userError);
+      throw new Error(`Failed to create user profile: ${userError.message}`);
+    }
 
-  if (donorError) throw donorError;
+    const { error: donorError } = await supabase.from('donors').insert({
+      user_id: authData.user.id,
+      availability: true,
+    });
 
-  return authData;
+    if (donorError) {
+      console.error('Donor insert error:', donorError);
+      throw new Error(`Failed to create donor profile: ${donorError.message}`);
+    }
+
+    return authData;
+  } catch (error: any) {
+    throw error;
+  }
 }
 
 export async function signIn(email: string, password: string) {
